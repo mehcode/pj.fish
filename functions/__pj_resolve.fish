@@ -1,4 +1,4 @@
-function __pj_resolve --description 'Resolve keywords to a main git checkout, falling back to fzf'
+function __pj_resolve
     if set -q argv[1]
         # Top zoxide match wins, using zoxide's own keyword rules.
         set -l dir (zoxide query --list --all -- $argv 2>/dev/null | while read -l d

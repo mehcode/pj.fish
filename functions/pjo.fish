@@ -1,4 +1,5 @@
-function pjo --description 'Open a main git checkout in Zed (fzf picker with no arguments)'
+function pjo --description 'Open a git repository in your editor'
+    set -l cmd (__pj_open_cmd); or return
     set -l dir (__pj_resolve $argv); or return
-    zeditor $dir
+    $cmd $dir
 end
