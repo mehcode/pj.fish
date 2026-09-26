@@ -14,7 +14,7 @@ function __pj_open
 
     # Fallback to $VISUAL, $EDITOR.
     for var in VISUAL EDITOR
-        if set -q $var
+        if test -n "$$var"
             echo $$var | read -at cmd
             $cmd $argv
             return
