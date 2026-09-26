@@ -1,13 +1,13 @@
-function __pj_open_cmd
+function __pj_open
     if set -q pj_open_cmd[1]
-        printf "%s\n" $pj_open_cmd
+        $pj_open_cmd $argv
         return
     end
 
     # Try several editors first.
     for cmd in zeditor zed code idea
         if command -q $cmd
-            echo $cmd
+            $cmd $argv
             return
         end
     end
@@ -16,7 +16,7 @@ function __pj_open_cmd
     for var in VISUAL EDITOR
         if set -q $var
             echo $$var | read -at cmd
-            printf "%s\n" $cmd
+            $cmd $argv
             return
         end
     end
