@@ -9,11 +9,13 @@ function __pj_resolve
         end
     end
 
-    # Otherwise pick from every repository, labelled by its path relative to the ghq root.
+    # Otherwise pick from every repository, labelled by its path relative to the first root.
     # Given no strings, string replace reads stdin, and gum filter lists the current directory.
     set -l dirs (__pj_list)
     set -q dirs[1]; or return 1
-    set -l labels (string replace -- (ghq root)/ '' $dirs)
+    set -l labels $dirs
+    set -l root (__pj_root)[1]
+    set -q root[1]; and set labels (string replace -- $root/ '' $dirs)
 
     # Finders disagree on how they report a cancel, so anything but a label counts as one.
     set -l label (printf '%s\n' $labels | __pj_find $argv)
