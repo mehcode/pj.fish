@@ -9,17 +9,14 @@ function __pj_resolve
         end
     end
 
-    # Otherwise pick from every repository.
-    # Each line is "label<tab>dir", and fzf shows only the the path relative to the ghq root.
-    set -l root (ghq root)/
-    set -l line (
-        for dir in (__pj_list)
-            printf '%s\t%s\n' (string replace -- $root '' $dir) $dir
-        end | fzf --delimiter \t --with-nth 1 --no-sort --scheme=path \
-            --query "$argv" --select-1 --exit-0 \
-            --preview 'git -C {2} log --oneline --color -15'
-    )
-    or return 1
+    # Otherwise pick from every repository, labelled by its path relative to the ghq root.
+    # Given no strings, string replace reads stdin, and gum filter lists the current directory.
+    set -l dirs (__pj_list)
+    set -q dirs[1]; or return 1
+    set -l labels (string replace -- (ghq root)/ '' $dirs)
 
-    string split -f 2 \t -- $line
+    # Finders disagree on how they report a cancel, so anything but a label counts as one.
+    set -l label (printf '%s\n' $labels | __pj_find $argv)
+    set -l i (contains -i -- "$label" $labels); or return 1
+    echo $dirs[$i]
 end
