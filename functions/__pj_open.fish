@@ -4,8 +4,15 @@ function __pj_open
         return
     end
 
+    # OpenZFS installs its event daemon as zed too, and only Zed's CLI prints "Zed <version>".
+    # Ask with --version, since the daemon reads -v as verbose and tries to start.
+    if command -q zed; and zed --version 2>/dev/null | string match -q 'Zed *'
+        zed $argv
+        return
+    end
+
     # Try several editors first.
-    for cmd in zeditor zed code idea
+    for cmd in zeditor code idea
         if command -q $cmd
             $cmd $argv
             return
