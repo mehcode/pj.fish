@@ -1,15 +1,16 @@
 function __pj_find
+    set -l query "$argv"
     if set -q pj_find_cmd[1]
-        $pj_find_cmd
+        $pj_find_cmd $query
         return
     end
 
     # Each line is a repository path, relative to the first root or absolute.
     # git resolves a relative -C against the one before it, so previews work for either.
     set -l root (__pj_root)[1]
+
     # With no root the quotes still escape to '', and git -C '' stays put.
     set root (string escape -- "$root")
-    set -l query "$argv"
 
     if command -q fzf
         fzf --no-sort --scheme=path --query $query --select-1 --exit-0 \
