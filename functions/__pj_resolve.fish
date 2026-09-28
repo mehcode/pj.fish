@@ -12,7 +12,11 @@ function __pj_resolve
     # Otherwise pick from every repository, labelled by its path relative to the first root.
     # Given no strings, string replace reads stdin, and gum filter lists the current directory.
     set -l dirs (__pj_list)
-    set -q dirs[1]; or return 1
+    if not set -q dirs[1]
+        echo 'pj: No repositories found (set pj_root to your projects directory)' >&2
+        return 1
+    end
+
     set -l labels $dirs
     set -l root (__pj_root)[1]
     set -q root[1]; and set labels (string replace -- $root/ '' $dirs)
