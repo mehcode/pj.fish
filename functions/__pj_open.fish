@@ -20,10 +20,10 @@ function __pj_open
     end
 
     # Fallback to $VISUAL, $EDITOR.
+    # eval them the way git hands them to sh, so ~ and $HOME in them expand.
     for var in VISUAL EDITOR
         if test -n "$$var"
-            echo $$var | read -at cmd
-            $cmd $argv
+            eval $$var (string escape -- $argv)
             return
         end
     end
