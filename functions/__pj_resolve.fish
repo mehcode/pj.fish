@@ -19,7 +19,10 @@ function __pj_resolve
 
     set -l labels $dirs
     set -l root (__pj_root)[1]
-    set -q root[1]; and set labels (string replace -- $root/ '' $dirs)
+    if set -q root[1]
+        set -l prefix (string escape --style=regex -- $root/)
+        set labels (string replace -r -- "^$prefix" '' $dirs)
+    end
 
     # Finders disagree on how they report a cancel, so anything but a label counts as one.
     set -l label (printf '%s\n' $labels | __pj_find $argv)
