@@ -1,1 +1,1 @@
-complete -c pjo -f -a '(__pj_complete)'
+complete -c pjo -f -k -a '(__pj_complete)'
