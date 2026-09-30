@@ -4,6 +4,8 @@
 
 - Finds projects from [`ghq`], [`ghr`], [`gogh`] or [`$XDG_PROJECTS_DIR`].
 
+- Skips linked [worktrees], each project shows up once, at its main [worktree].
+
 - Picks with [`fzf`], [`sk`], [`tv`] or [`gum`].
 
 - Opens projects in [Zed], [VS Code], [IntelliJ IDEA], `$VISUAL` or `$EDITOR`.
@@ -44,6 +46,14 @@ pjo dotfiles
 ```
 
 Press <kbd>Tab</kbd> after `pj` or `pjo` to complete a project's name.
+
+## Worktrees
+
+`pj` will only jump to a project's main [worktree] (the one with a `.git` directory).
+
+- The picker lists each project once, regardless of how many [worktrees] it has.
+
+- `pj app` lands in `app` even if `app.feature` is ranked higher.
 
 ## Configuration
 
@@ -109,3 +119,5 @@ Licensed under the [MIT License](LICENSE).
 [zed]: https://zed.dev
 [vs code]: https://code.visualstudio.com
 [intellij idea]: https://www.jetbrains.com/idea/
+[worktrees]: https://git-scm.com/docs/git-worktree
+[worktree]: https://git-scm.com/docs/git-worktree
