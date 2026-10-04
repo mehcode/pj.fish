@@ -1,11 +1,21 @@
 function __pj_resolve
+    # Declared first, so a global _flag_exclude isn't read when the flag isn't given.
+    set -l _flag_exclude
+    argparse exclude= -- $argv
+    or return
+
     # With keywords, the best repository the query finds wins.
+    # The excluded one still wins when it's the only match, so that case never reaches the picker.
     if set -q argv[1]
+        set -l best
         for dir in (__pj_query $argv)
-            if test -d "$dir/.git"
-                echo $dir
-                return
-            end
+            test -d "$dir/.git"; or continue
+            set best $dir
+            test "$dir" = "$_flag_exclude"; or break
+        end
+        if set -q best[1]
+            echo $best
+            return
         end
     end
 
