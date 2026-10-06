@@ -1,0 +1,3 @@
+[submodule "third-party/littlecheck"]
+	path = third-party/littlecheck
+	url = https://github.com/ridiculousfish/littlecheck
