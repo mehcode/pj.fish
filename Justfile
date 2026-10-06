@@ -1,9 +1,11 @@
+alias fmt := format
+
 [default]
 list:
     @just --list
 
 # Format fish files to fish_indent's style.
-fmt:
+format:
     fish_indent --write functions/*.fish completions/*.fish
 
 # Check syntax and formatting of every fish file.
