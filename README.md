@@ -65,7 +65,7 @@ Defaults to asking the project root from [`ghq`], [`ghr`] or [`gogh`];
 falling back to [`$XDG_PROJECTS_DIR`].
 
 ```fish
-set --universal pj_root ~/src ~/work
+set --global pj_root ~/src ~/work
 ```
 
 ### `$pj_query_cmd`
@@ -86,7 +86,7 @@ so end it with your finder's query flag.
 Defaults to [`fzf`], [`sk`], [`tv`] or [`gum`].
 
 ```fish
-set --universal pj_find_cmd fzf --height 40% --reverse --query
+set --global pj_find_cmd fzf --height 40% --reverse --query
 ```
 
 ### `$pj_open_cmd`
@@ -98,7 +98,7 @@ Defaults to the first of [Zed], [VS Code] or [IntelliJ IDEA] that's installed,
 then `$VISUAL`, then `$EDITOR`.
 
 ```fish
-set --universal pj_open_cmd code --new-window
+set --global pj_open_cmd code --new-window
 ```
 
 ## License
