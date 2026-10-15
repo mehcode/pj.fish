@@ -75,10 +75,51 @@ report
 # CHECKERR: labels: app lib $tmp/other/tool
 # CHECK: 1 $tmp/root/lib
 
+# After --, an option is a keyword.
+pj -- --help
+report
+# CHECKERR: finder: [--query] [--help]
+# CHECKERR: labels: app lib $tmp/other/tool
+# CHECK: 1 $tmp/root/lib
+
 set pj_root $tmp/empty
 pj
 report
 # CHECKERR: pj: No repositories found (set pj_root to your projects directory)
 # CHECK: 1 $tmp/root/lib
+
+# Every lookup starts with the query, so a mark it leaves shows whether one was started.
+# It can't report on stderr the way finder does, since __pj_query drops that.
+function query
+    set -g queried
+end
+
+pj --help
+report
+# CHECK: Usage: pj <keywords>...  Jump to the best match for the keywords
+# CHECK:        pj                Pick from every project
+# CHECK: Options:
+# CHECK:        -h, --help  Print this help message
+# CHECK:        --          Take what follows as keywords, even if it starts with -
+# CHECK: Variables:
+# CHECK:        pj_root       Directories to scan for projects
+# CHECK:        pj_query_cmd  Command that ranks the directories you've visited
+# CHECK:        pj_find_cmd   Command that picks a project from a list
+# CHECK:        pj_open_cmd   Command that pjo opens a project with
+# CHECK: 0 $tmp/root/lib
+
+pj -h | string match 'Usage:*'
+echo $pipestatus[1]
+# CHECK: Usage: pj <keywords>...  Jump to the best match for the keywords
+# CHECK: 0
+
+# Only the prefix is ours. argparse writes the rest of the message.
+pj --nope
+report
+# CHECKERR: pj: {{.*--nope.*}}
+# CHECK: 2 $tmp/root/lib
+
+set -q queried; or echo not queried
+# CHECK: not queried
 
 rm -rf $tmp

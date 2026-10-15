@@ -3,7 +3,7 @@
 set fish_function_path (path resolve (status dirname)/../functions) $fish_function_path
 set -g tmp (path resolve (mktemp -d))
 set -gx HOME $tmp/home
-mkdir -p $HOME $tmp/root/{app,lib}/.git
+mkdir -p $HOME $tmp/root/{app,lib,--help}/.git
 
 # The best match is named after the keywords, so pjo opens lib when they don't reach the query.
 function query
@@ -28,5 +28,43 @@ pjo app
 cd $tmp/root/app
 pjo app
 # CHECK: opener: [--new-window] [$tmp/root/app]
+
+# After --, an option is a keyword.
+pjo -- --help
+# CHECK: opener: [--new-window] [$tmp/root/--help]
+
+# Every lookup starts with the query, so a mark it leaves shows whether one was started.
+# It can't report on stderr, since __pj_query drops that.
+function query
+    set -g queried
+end
+
+pjo --help
+echo $status
+# CHECK: Usage: pjo <keywords>...  Open the best match for the keywords in your editor
+# CHECK:        pjo                Pick from every project
+# CHECK: Options:
+# CHECK:        -h, --help  Print this help message
+# CHECK:        --          Take what follows as keywords, even if it starts with -
+# CHECK: Variables:
+# CHECK:        pj_root       Directories to scan for projects
+# CHECK:        pj_query_cmd  Command that ranks the directories you've visited
+# CHECK:        pj_find_cmd   Command that picks a project from a list
+# CHECK:        pj_open_cmd   Command that pjo opens a project with
+# CHECK: 0
+
+pjo -h | string match 'Usage:*'
+echo $pipestatus[1]
+# CHECK: Usage: pjo <keywords>...  Open the best match for the keywords in your editor
+# CHECK: 0
+
+# Only the prefix is ours. argparse writes the rest of the message.
+pjo --nope
+echo $status
+# CHECKERR: pjo: {{.*--nope.*}}
+# CHECK: 2
+
+set -q queried; or echo not queried
+# CHECK: not queried
 
 rm -rf $tmp

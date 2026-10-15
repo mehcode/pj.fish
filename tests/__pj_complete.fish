@@ -27,4 +27,12 @@ complete -C 'pjo ' | string replace -a $tmp '$tmp'
 # CHECK: dots{{\t}}~
 # CHECK: app{{\t}}~/src
 
+complete -C 'pj -'
+# CHECK: -h{{\t}}Print help
+# CHECK: --help{{\t}}Print help
+
+complete -C 'pjo -'
+# CHECK: -h{{\t}}Print help
+# CHECK: --help{{\t}}Print help
+
 rm -rf $tmp
