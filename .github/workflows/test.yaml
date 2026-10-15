@@ -1,0 +1,26 @@
+name: Test
+
+on:
+    pull_request:
+    push:
+        branches: [main]
+
+permissions:
+    contents: read
+
+jobs:
+    test:
+        name: Test
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest, macos-latest]
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v7
+
+            - uses: fish-shop/install-fish-shell@3b90b2448f9374be5fc694147dca77bd3e13ed63 # v2.1.31
+
+            - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4.0.0
+
+            - run: just test

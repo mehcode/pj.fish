@@ -1,0 +1,35 @@
+name: Install
+
+on:
+    pull_request:
+    push:
+        branches: [main]
+
+permissions:
+    contents: read
+
+jobs:
+    install:
+        name: Install
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+
+            - uses: fish-shop/install-fish-shell@3b90b2448f9374be5fc694147dca77bd3e13ed63 # v2.1.31
+
+            - uses: fish-shop/install-plugin-manager@b66d067edf931bcca37261f37c1a681deb60c2f4 # v2.3.122
+              with:
+                  plugin-manager: fisher
+
+            - run: fisher install $GITHUB_WORKSPACE
+              shell: fish {0}
+
+            - name: Check if `pj` and `pjo` load
+              shell: fish {0}
+              run: |
+                  functions --query pj pjo
+                  or exit 1
+                  for cmd in pj pjo
+                      complete --do-complete "$cmd -" | string match --quiet -- '--help*'
+                      or exit 1
+                  end
