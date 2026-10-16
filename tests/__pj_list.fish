@@ -19,9 +19,10 @@ projects
 # CHECK: $tmp/root/app
 # CHECK: $tmp/root/1/2/3/deep
 
-# deep is one the scan finds too, so it'd be printed twice if duplicates weren't dropped.
+# The query prints deep twice and the scan finds it again, so it'd be printed three times if
+# duplicates weren't dropped.
 function query
-    printf '%s\n' $tmp/root/app.feature $tmp/else/tool $tmp/root/1/2/3/deep $tmp/gone
+    printf '%s\n' $tmp/root/app.feature $tmp/else/tool $tmp/root/1/2/3/deep $tmp/gone $tmp/root/1/2/3/deep
 end
 
 set pj_query_cmd query

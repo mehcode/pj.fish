@@ -1,5 +1,5 @@
 function __pj_list
-    begin
+    set -l found (
         __pj_query
 
         # Stop 4 levels down, since a directory that isn't a repository can take seconds to walk.
@@ -16,8 +16,15 @@ function __pj_list
             end
             set dirs $next
         end
-    end | awk '!seen[$0]++' | while read -l dir
-        # A main worktree has a .git directory; linked worktrees have a .git file.
-        test -d "$dir/.git"; and echo $dir
+    )
+
+    # A main worktree has a .git directory. A linked worktree has a .git file.
+    for dir in (path filter -d -- $found/.git | string replace -r -- '/\.git$' '')
+        # A variable named after each project marks it seen, since set -q finds one without walking
+        # a list. It's set -f because a set -l in the loop is gone by the next pass.
+        set -l key __pj_seen_(string escape --style=var -- $dir)
+        set -q $key; and continue
+        set -f $key
+        echo $dir
     end
 end
