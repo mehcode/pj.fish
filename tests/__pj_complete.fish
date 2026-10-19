@@ -29,10 +29,14 @@ complete -C 'pjo ' | string replace -a $tmp '$tmp'
 
 complete -C 'pj -'
 # CHECK: -h{{\t}}Print help
+# CHECK: -v{{\t}}Print version
 # CHECK: --help{{\t}}Print help
+# CHECK: --version{{\t}}Print version
 
 complete -C 'pjo -'
 # CHECK: -h{{\t}}Print help
+# CHECK: -v{{\t}}Print version
 # CHECK: --help{{\t}}Print help
+# CHECK: --version{{\t}}Print version
 
 rm -rf $tmp

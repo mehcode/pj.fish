@@ -8,8 +8,9 @@ function __pj_help
             echo '       pjo                Pick from every project'
     end
     echo 'Options:'
-    echo '       -h, --help  Print this help message'
-    echo '       --          Take what follows as keywords, even if it starts with -'
+    echo '       -h, --help     Print this help message'
+    echo '       -v, --version  Print the version'
+    echo '       --             Take what follows as keywords, even if it starts with -'
     echo 'Variables:'
     echo '       pj_root       Directories to scan for projects'
     echo "       pj_query_cmd  Command that ranks the directories you've visited"

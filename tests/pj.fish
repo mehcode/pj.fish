@@ -106,8 +106,9 @@ report
 # CHECK: Usage: pj <keywords>...  Jump to the best match for the keywords
 # CHECK:        pj                Pick from every project
 # CHECK: Options:
-# CHECK:        -h, --help  Print this help message
-# CHECK:        --          Take what follows as keywords, even if it starts with -
+# CHECK:        -h, --help     Print this help message
+# CHECK:        -v, --version  Print the version
+# CHECK:        --             Take what follows as keywords, even if it starts with -
 # CHECK: Variables:
 # CHECK:        pj_root       Directories to scan for projects
 # CHECK:        pj_query_cmd  Command that ranks the directories you've visited
@@ -119,6 +120,16 @@ pj -h | string match 'Usage:*'
 echo $pipestatus[1]
 # CHECK: Usage: pj <keywords>...  Jump to the best match for the keywords
 # CHECK: 0
+
+pj --version
+report
+# CHECK: pj, version {{\d+\.\d+\.\d+}}
+# CHECK: 0 $tmp/root/lib
+
+pj -v
+report
+# CHECK: pj, version {{\d+\.\d+\.\d+}}
+# CHECK: 0 $tmp/root/lib
 
 # Only the prefix is ours. argparse writes the rest of the message.
 pj --nope

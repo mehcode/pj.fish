@@ -51,8 +51,9 @@ echo $status
 # CHECK: Usage: pjo <keywords>...  Open the best match for the keywords in your editor
 # CHECK:        pjo                Pick from every project
 # CHECK: Options:
-# CHECK:        -h, --help  Print this help message
-# CHECK:        --          Take what follows as keywords, even if it starts with -
+# CHECK:        -h, --help     Print this help message
+# CHECK:        -v, --version  Print the version
+# CHECK:        --             Take what follows as keywords, even if it starts with -
 # CHECK: Variables:
 # CHECK:        pj_root       Directories to scan for projects
 # CHECK:        pj_query_cmd  Command that ranks the directories you've visited
@@ -64,6 +65,20 @@ pjo -h | string match 'Usage:*'
 echo $pipestatus[1]
 # CHECK: Usage: pjo <keywords>...  Open the best match for the keywords in your editor
 # CHECK: 0
+
+pjo --version
+echo $status
+# CHECK: pjo, version {{\d+\.\d+\.\d+}}
+# CHECK: 0
+
+pjo -v
+echo $status
+# CHECK: pjo, version {{\d+\.\d+\.\d+}}
+# CHECK: 0
+
+test (pjo --version | string split -f3 ' ') = (pj --version | string split -f3 ' ')
+and echo pj and pjo agree
+# CHECK: pj and pjo agree
 
 # Only the prefix is ours. argparse writes the rest of the message.
 pjo --nope
