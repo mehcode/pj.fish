@@ -9,6 +9,6 @@ function pjo --description 'Open a git repository in your editor'
         return
     end
 
-    set -l dir (__pj_resolve -- $argv); or return
-    __pj_open $dir
+    set -l dir (__pj_resolve --name=pjo -- $argv); or return
+    __pj_open --name=pjo -- $dir
 end

@@ -1,4 +1,7 @@
 function __pj_open
+    argparse name= -- $argv
+    or return
+
     if set -q pj_open_cmd[1]
         $pj_open_cmd $argv
         return
@@ -28,6 +31,6 @@ function __pj_open
         end
     end
 
-    echo 'pjo: No editor found (set pj_open_cmd to your preferred editor)' >&2
+    echo "$_flag_name: No editor found (set pj_open_cmd to your preferred editor)" >&2
     return 1
 end

@@ -1,4 +1,7 @@
 function __pj_find
+    argparse name= -- $argv
+    or return
+
     set -l query "$argv"
     if set -q pj_find_cmd[1]
         $pj_find_cmd $query
@@ -26,7 +29,7 @@ function __pj_find
     else if command -q gum
         gum filter --no-fuzzy-sort --value $query --select-if-one
     else
-        echo 'pj: No fuzzy finder found (set pj_find_cmd to your preferred finder)' >&2
+        echo "$_flag_name: No fuzzy finder found (set pj_find_cmd to your preferred finder)" >&2
         return 1
     end
 end

@@ -1,7 +1,7 @@
 function __pj_resolve
     # Declared first, so a global _flag_exclude isn't read when the flag isn't given.
     set -l _flag_exclude
-    argparse exclude= -- $argv
+    argparse name= exclude= -- $argv
     or return
 
     # With keywords, the best repository the query finds wins.
@@ -23,7 +23,7 @@ function __pj_resolve
     # Given no strings, string replace reads stdin, and gum filter lists the current directory.
     set -l dirs (__pj_list)
     if not set -q dirs[1]
-        echo 'pj: No repositories found (set pj_root to your projects directory)' >&2
+        echo "$_flag_name: No repositories found (set pj_root to your projects directory)" >&2
         return 1
     end
 
@@ -35,7 +35,7 @@ function __pj_resolve
     end
 
     # Finders disagree on how they report a cancel, so anything but a label counts as one.
-    set -l label (printf '%s\n' $labels | __pj_find $argv)
+    set -l label (printf '%s\n' $labels | __pj_find --name=$_flag_name -- $argv)
     set -l i (contains -i -- "$label" $labels); or return 1
     echo $dirs[$i]
 end

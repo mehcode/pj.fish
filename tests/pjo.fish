@@ -3,7 +3,7 @@
 set fish_function_path (path resolve (status dirname)/../functions) $fish_function_path
 set -g tmp (path resolve (mktemp -d))
 set -gx HOME $tmp/home
-mkdir -p $HOME $tmp/root/{app,lib,--help}/.git
+mkdir -p $HOME $tmp/root/{app,lib,--help}/.git $tmp/empty
 
 # The best match is named after the keywords, so pjo opens lib when they don't reach the query.
 function query
@@ -32,6 +32,13 @@ pjo app
 # After --, an option is a keyword.
 pjo -- --help
 # CHECK: opener: [--new-window] [$tmp/root/--help]
+
+# An empty PATH and no editor variables, so the editors installed on this machine aren't found.
+set -e pj_open_cmd
+PATH=$tmp/empty VISUAL= EDITOR= pjo app
+echo $status
+# CHECKERR: pjo: No editor found (set pj_open_cmd to your preferred editor)
+# CHECK: 1
 
 # Every lookup starts with the query, so a mark it leaves shows whether one was started.
 # It can't report on stderr, since __pj_query drops that.
@@ -66,5 +73,20 @@ echo $status
 
 set -q queried; or echo not queried
 # CHECK: not queried
+
+# query only leaves its mark now, so an empty root leaves nothing to list.
+set pj_root $tmp/empty
+pjo
+echo $status
+# CHECKERR: pjo: No repositories found (set pj_root to your projects directory)
+# CHECK: 1
+
+# An empty PATH, so the finders installed on this machine aren't found.
+set pj_root $tmp/root
+set -e pj_find_cmd
+PATH=$tmp/empty pjo
+echo $status
+# CHECKERR: pjo: No fuzzy finder found (set pj_find_cmd to your preferred finder)
+# CHECK: 1
 
 rm -rf $tmp

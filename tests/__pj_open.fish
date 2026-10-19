@@ -33,7 +33,7 @@ PATH=$tmp/none VISUAL='~/bin/edit --visual' EDITOR='~/bin/edit --editor' __pj_op
 PATH=$tmp/none VISUAL= EDITOR='$HOME/bin/edit --editor' __pj_open project
 # CHECK: edit --editor project
 
-PATH=$tmp/none VISUAL= EDITOR= __pj_open project
+PATH=$tmp/none VISUAL= EDITOR= __pj_open --name=pjo project
 echo $status
 # CHECKERR: pjo: No editor found (set pj_open_cmd to your preferred editor)
 # CHECK: 1

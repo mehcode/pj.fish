@@ -82,6 +82,13 @@ report
 # CHECKERR: labels: app lib $tmp/other/tool
 # CHECK: 1 $tmp/root/lib
 
+# An empty PATH, so the finders installed on this machine aren't found.
+set -e pj_find_cmd
+PATH=$tmp/empty pj foo
+report
+# CHECKERR: pj: No fuzzy finder found (set pj_find_cmd to your preferred finder)
+# CHECK: 1 $tmp/root/lib
+
 set pj_root $tmp/empty
 pj
 report
