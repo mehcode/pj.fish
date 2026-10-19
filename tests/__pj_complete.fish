@@ -27,10 +27,25 @@ complete -C 'pjo ' | string replace -a $tmp '$tmp'
 # CHECK: dots{{\t}}~
 # CHECK: app{{\t}}~/src
 
+# Only projects, so open isn't offered at the top of a list that's otherwise most-used first.
+complete -C 'pj open ' | string replace -a $tmp '$tmp'
+# CHECK: tool{{\t}}$tmp/mirror$tmp/home
+# CHECK: lib{{\t}}$tmp/home.bak
+# CHECK: dots{{\t}}~
+# CHECK: app{{\t}}~/src
+
+complete -C 'pj --open ' | string replace -a $tmp '$tmp'
+# CHECK: tool{{\t}}$tmp/mirror$tmp/home
+# CHECK: lib{{\t}}$tmp/home.bak
+# CHECK: dots{{\t}}~
+# CHECK: app{{\t}}~/src
+
 complete -C 'pj -'
 # CHECK: -h{{\t}}Print help
+# CHECK: -o{{\t}}Open in your editor
 # CHECK: -v{{\t}}Print version
 # CHECK: --help{{\t}}Print help
+# CHECK: --open{{\t}}Open in your editor
 # CHECK: --version{{\t}}Print version
 
 complete -C 'pjo -'

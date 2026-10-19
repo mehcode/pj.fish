@@ -39,10 +39,13 @@ Pick from every project, with the ones you visit most at the top.
 pj
 ```
 
-Open a project in your editor. `pjo` takes the same keywords as `pj`.
+Open a project in your editor. `pjo` takes the same keywords as `pj`,
+and so do `pj open` and `pj --open` (`-o`).
 
 ```console
 pjo dotfiles
+pj open dotfiles
+pj --open dotfiles
 ```
 
 Press <kbd>Tab</kbd> after `pj` or `pjo` to complete a project's name.
@@ -91,7 +94,7 @@ set --global pj_find_cmd fzf --height 40% --reverse --query
 
 ### `$pj_open_cmd`
 
-The command `pjo` opens a project with.
+The command `pjo` and `pj open` open a project with.
 It gets the project's directory as its last argument.
 
 Defaults to the first of [Zed], [VS Code] or [IntelliJ IDEA] that's installed,

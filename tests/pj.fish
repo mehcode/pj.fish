@@ -82,6 +82,78 @@ report
 # CHECKERR: labels: app lib $tmp/other/tool
 # CHECK: 1 $tmp/root/lib
 
+# open is only the subcommand with a keyword after it, and never after --.
+pj open
+report
+# CHECKERR: finder: [--query] [open]
+# CHECKERR: labels: app lib $tmp/other/tool
+# CHECK: 1 $tmp/root/lib
+
+pj -- open foo
+report
+# CHECKERR: finder: [--query] [open foo]
+# CHECKERR: labels: app lib $tmp/other/tool
+# CHECK: 1 $tmp/root/lib
+
+pj openssl
+report
+# CHECKERR: finder: [--query] [openssl]
+# CHECKERR: labels: app lib $tmp/other/tool
+# CHECK: 1 $tmp/root/lib
+
+pj foo open
+report
+# CHECKERR: finder: [--query] [foo open]
+# CHECKERR: labels: app lib $tmp/other/tool
+# CHECK: 1 $tmp/root/lib
+
+function opener
+    echo opener: "["$argv"]" | string replace $tmp '$tmp'
+end
+
+set -g pj_open_cmd opener --new-window
+
+# Each spelling opens what pjo app does, and stays in lib.
+set visited $tmp/root/app $tmp/root/lib
+pj open app
+report
+# CHECK: opener: [--new-window] [$tmp/root/app]
+# CHECK: 0 $tmp/root/lib
+
+pj --open app
+report
+# CHECK: opener: [--new-window] [$tmp/root/app]
+# CHECK: 0 $tmp/root/lib
+
+pj -o app
+report
+# CHECK: opener: [--new-window] [$tmp/root/app]
+# CHECK: 0 $tmp/root/lib
+
+# pj lib would move on to app from here. Opening takes the best match wherever it's run.
+set visited $tmp/root/lib $tmp/root/app
+pj --open lib
+report
+# CHECK: opener: [--new-window] [$tmp/root/lib]
+# CHECK: 0 $tmp/root/lib
+
+set choice app
+pj --open
+report
+# CHECKERR: finder: [--query] []
+# CHECKERR: labels: lib app $tmp/other/tool
+# CHECK: opener: [--new-window] [$tmp/root/app]
+# CHECK: 0 $tmp/root/lib
+
+# An empty PATH and no editor variables, so the editors installed on this machine aren't found.
+set -e pj_open_cmd
+PATH=$tmp/empty VISUAL= EDITOR= pj open app
+report
+# CHECKERR: pj: No editor found (set pj_open_cmd to your preferred editor)
+# CHECK: 1 $tmp/root/lib
+
+set visited $tmp/root/notes
+
 # An empty PATH, so the finders installed on this machine aren't found.
 set -e pj_find_cmd
 PATH=$tmp/empty pj foo
@@ -103,22 +175,24 @@ end
 
 pj --help
 report
-# CHECK: Usage: pj <keywords>...  Jump to the best match for the keywords
-# CHECK:        pj                Pick from every project
+# CHECK: Usage: pj <keywords>...       Jump to the best match for the keywords
+# CHECK:        pj                     Pick from every project
+# CHECK:        pj open <keywords>...  Open the best match in your editor
 # CHECK: Options:
 # CHECK:        -h, --help     Print this help message
 # CHECK:        -v, --version  Print the version
-# CHECK:        --             Take what follows as keywords, even if it starts with -
+# CHECK:        -o, --open     Open in your editor instead of jumping
+# CHECK:        --             Take what follows as keywords, even 'open' or one starting with -
 # CHECK: Variables:
 # CHECK:        pj_root       Directories to scan for projects
 # CHECK:        pj_query_cmd  Command that ranks the directories you've visited
 # CHECK:        pj_find_cmd   Command that picks a project from a list
-# CHECK:        pj_open_cmd   Command that pjo opens a project with
+# CHECK:        pj_open_cmd   Command that opens a project in your editor
 # CHECK: 0 $tmp/root/lib
 
 pj -h | string match 'Usage:*'
 echo $pipestatus[1]
-# CHECK: Usage: pj <keywords>...  Jump to the best match for the keywords
+# CHECK: Usage: pj <keywords>...       Jump to the best match for the keywords
 # CHECK: 0
 
 pj --version

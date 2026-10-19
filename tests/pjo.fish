@@ -58,7 +58,7 @@ echo $status
 # CHECK:        pj_root       Directories to scan for projects
 # CHECK:        pj_query_cmd  Command that ranks the directories you've visited
 # CHECK:        pj_find_cmd   Command that picks a project from a list
-# CHECK:        pj_open_cmd   Command that pjo opens a project with
+# CHECK:        pj_open_cmd   Command that opens a project in your editor
 # CHECK: 0
 
 pjo -h | string match 'Usage:*'
