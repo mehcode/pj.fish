@@ -48,6 +48,13 @@ pj open dotfiles
 pj --open dotfiles
 ```
 
+Print a project's path instead of jumping to it, with `pj --echo` (`-e`).
+With no keywords it opens the picker and prints the one you pick.
+
+```console
+ls (pj --echo dotfiles)
+```
+
 Press <kbd>Tab</kbd> after `pj` or `pjo` to complete a project's name.
 
 ## Worktrees
@@ -94,7 +101,7 @@ set --global pj_find_cmd fzf --height 40% --reverse --query
 
 ### `$pj_open_cmd`
 
-The command `pjo` and `pj open` open a project with.
+The command `pjo`, `pj open` and `pj --open` open a project with.
 It gets the project's directory as its last argument.
 
 Defaults to the first of [Zed], [VS Code] or [IntelliJ IDEA] that's installed,

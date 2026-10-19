@@ -13,7 +13,8 @@ function __pj_help
     echo '       -v, --version  Print the version'
     switch $argv[1]
         case pj
-            echo '       -o, --open     Open in your editor instead of jumping'
+            echo '       -o, --open     Open in your editor'
+            echo '       -e, --echo     Print the path'
             echo "       --             Take what follows as keywords, even 'open' or one starting with -"
         case pjo
             echo '       --             Take what follows as keywords, even if it starts with -'

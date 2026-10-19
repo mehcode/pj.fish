@@ -40,10 +40,30 @@ complete -C 'pj --open ' | string replace -a $tmp '$tmp'
 # CHECK: dots{{\t}}~
 # CHECK: app{{\t}}~/src
 
+complete -C 'pj -o ' | string replace -a $tmp '$tmp'
+# CHECK: tool{{\t}}$tmp/mirror$tmp/home
+# CHECK: lib{{\t}}$tmp/home.bak
+# CHECK: dots{{\t}}~
+# CHECK: app{{\t}}~/src
+
+complete -C 'pj --echo ' | string replace -a $tmp '$tmp'
+# CHECK: tool{{\t}}$tmp/mirror$tmp/home
+# CHECK: lib{{\t}}$tmp/home.bak
+# CHECK: dots{{\t}}~
+# CHECK: app{{\t}}~/src
+
+complete -C 'pj -e ' | string replace -a $tmp '$tmp'
+# CHECK: tool{{\t}}$tmp/mirror$tmp/home
+# CHECK: lib{{\t}}$tmp/home.bak
+# CHECK: dots{{\t}}~
+# CHECK: app{{\t}}~/src
+
 complete -C 'pj -'
+# CHECK: -e{{\t}}Print the path
 # CHECK: -h{{\t}}Print help
 # CHECK: -o{{\t}}Open in your editor
 # CHECK: -v{{\t}}Print version
+# CHECK: --echo{{\t}}Print the path
 # CHECK: --help{{\t}}Print help
 # CHECK: --open{{\t}}Open in your editor
 # CHECK: --version{{\t}}Print version

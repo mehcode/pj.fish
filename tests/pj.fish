@@ -145,6 +145,48 @@ report
 # CHECK: opener: [--new-window] [$tmp/root/app]
 # CHECK: 0 $tmp/root/lib
 
+# Captures stdout the way cd (pj -e) does. A cd in a command substitution still moves the shell,
+# so report shows one, and an editor that started would print among the paths.
+function echoed
+    set -g out (pj $argv)
+    report
+    for dir in $out
+        echo out: (string replace $tmp '$tmp' -- $dir)
+    end
+end
+
+set visited $tmp/root/notes
+set choice $tmp/other/tool
+echoed -e foo
+# CHECKERR: finder: [--query] [foo]
+# CHECKERR: labels: app lib $tmp/other/tool
+# CHECK: 0 $tmp/root/lib
+# CHECK: out: $tmp/other/tool
+
+set choice nothing
+echoed -e foo
+# CHECKERR: finder: [--query] [foo]
+# CHECKERR: labels: app lib $tmp/other/tool
+# CHECK: 1 $tmp/root/lib
+
+# pj lib would move on to app from here. Printing takes the best match wherever it's run.
+set visited $tmp/root/lib $tmp/root/app
+echoed --echo lib
+# CHECK: 0 $tmp/root/lib
+# CHECK: out: $tmp/root/lib
+
+set choice app
+echoed --echo
+# CHECKERR: finder: [--query] []
+# CHECKERR: labels: lib app $tmp/other/tool
+# CHECK: 0 $tmp/root/lib
+# CHECK: out: $tmp/root/app
+
+set visited $tmp/root/app $tmp/root/lib
+echoed -e app
+# CHECK: 0 $tmp/root/lib
+# CHECK: out: $tmp/root/app
+
 # An empty PATH and no editor variables, so the editors installed on this machine aren't found.
 set -e pj_open_cmd
 PATH=$tmp/empty VISUAL= EDITOR= pj open app
@@ -167,6 +209,10 @@ report
 # CHECKERR: pj: No repositories found (set pj_root to your projects directory)
 # CHECK: 1 $tmp/root/lib
 
+echoed --echo
+# CHECKERR: pj: No repositories found (set pj_root to your projects directory)
+# CHECK: 1 $tmp/root/lib
+
 # Every lookup starts with the query, so a mark it leaves shows whether one was started.
 # It can't report on stderr the way finder does, since __pj_query drops that.
 function query
@@ -181,7 +227,8 @@ report
 # CHECK: Options:
 # CHECK:        -h, --help     Print this help message
 # CHECK:        -v, --version  Print the version
-# CHECK:        -o, --open     Open in your editor instead of jumping
+# CHECK:        -o, --open     Open in your editor
+# CHECK:        -e, --echo     Print the path
 # CHECK:        --             Take what follows as keywords, even 'open' or one starting with -
 # CHECK: Variables:
 # CHECK:        pj_root       Directories to scan for projects
@@ -209,6 +256,17 @@ report
 pj --nope
 report
 # CHECKERR: pj: {{.*--nope.*}}
+# CHECK: 2 $tmp/root/lib
+
+# Opening and printing are two things to do with the path, so pj won't do both.
+pj --echo --open app
+report
+# CHECKERR: pj: e/echo o/open: options cannot be used together
+# CHECK: 2 $tmp/root/lib
+
+pj open -e app
+report
+# CHECKERR: pj: e/echo o/open: options cannot be used together
 # CHECK: 2 $tmp/root/lib
 
 set -q queried; or echo not queried
