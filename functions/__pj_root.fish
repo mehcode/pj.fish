@@ -2,11 +2,12 @@ function __pj_root
     if set -q pj_root[1]
         path normalize -- $pj_root
     else if command -q ghq
-        ghq root --all
+        # command -q only looks at PATH, so a function named ghq would run here without command.
+        command ghq root --all
     else if command -q ghr
-        ghr path
+        command ghr path
     else if command -q gogh
-        gogh roots list
+        command gogh roots list
     else
         set -l dir $XDG_PROJECTS_DIR
         if test -z "$dir"

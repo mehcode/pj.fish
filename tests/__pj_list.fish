@@ -14,6 +14,11 @@ end
 
 set -g pj_root $tmp/root
 
+# The scan doesn't call seq, so a function of that name can't change how deep it goes.
+function seq
+    echo 1
+end
+
 set -g pj_query_cmd true
 projects
 # CHECK: $tmp/root/app

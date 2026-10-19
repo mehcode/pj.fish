@@ -14,6 +14,11 @@ printf '%s\n' '#!/bin/sh' 'printf %s "${0##*/}"; printf " [%s]" "$@"; echo' \
     'echo /projects/best; echo "/projects/my app"; echo /projects/gone' >$tmp/zoxide/zoxide
 chmod +x $tmp/zoxide/zoxide
 
+# The query runs the executable, so what this prints never shows up below.
+function zoxide
+    echo /projects/function
+end
+
 # Each case adds a tool to the ones before it, so it also shows that tool wins over them.
 # With none, nothing is printed on either stream.
 PATH=$tmp/none __pj_query foo

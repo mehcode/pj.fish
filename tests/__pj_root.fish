@@ -9,10 +9,14 @@ mkdir -p $HOME/.config $tmp/xdg $tmp/none
 set -e pj_root XDG_CONFIG_HOME XDG_PROJECTS_DIR
 
 # Each directory is used as the whole PATH, so the tools installed on this machine aren't found.
+# The function of the same name is never run, so what it prints never shows up below.
 for tool in ghq ghr gogh
     mkdir $tmp/$tool
     printf '%s\n' '#!/bin/sh' 'echo "${0##*/} $*"' >$tmp/$tool/$tool
     chmod +x $tmp/$tool/$tool
+    function $tool
+        echo function (status current-function) $argv
+    end
 end
 
 function roots

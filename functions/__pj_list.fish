@@ -5,7 +5,7 @@ function __pj_list
         # Stop 4 levels down, since a directory that isn't a repository can take seconds to walk.
         # Globs keep the trailing slash, so $dir.git is the directory's own .git.
         set -l dirs (__pj_root)/
-        for depth in (seq 4)
+        for depth in 1 2 3 4
             set -l next
             for dir in $dirs*/
                 if test -d $dir.git

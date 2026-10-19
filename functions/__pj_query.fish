@@ -2,7 +2,8 @@ function __pj_query
     if set -q pj_query_cmd[1]
         $pj_query_cmd $argv
     else if command -q zoxide
-        zoxide query --list --all -- $argv
+        # command -q only looks at PATH, so a function named zoxide would run here without command.
+        command zoxide query --list --all -- $argv
     else if functions -q __z
         # z prints "score path", best first.
         __z --list $argv | string replace -r '^\S+\s+' ''
