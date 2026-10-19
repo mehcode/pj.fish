@@ -6,7 +6,7 @@ set -gx HOME $tmp/home
 mkdir -p $HOME/.config $tmp/xdg $tmp/none
 
 # --no-config doesn't stop these coming in from the environment.
-set -e pj_root XDG_CONFIG_HOME XDG_PROJECTS_DIR
+set -e pj_root PROJECT_PATHS XDG_CONFIG_HOME XDG_PROJECTS_DIR
 
 # Each directory is used as the whole PATH, so the tools installed on this machine aren't found.
 # The function of the same name is never run, so what it prints never shows up below.
@@ -27,7 +27,23 @@ set -g pj_root $tmp/src/ $tmp/work/../code
 roots
 # CHECK: $tmp/src
 # CHECK: $tmp/code
+
+mkdir -p $tmp/workspace $tmp/code
+set -gx PROJECT_PATHS $tmp/workspace/ $tmp/missing $tmp/src/../code
+PATH=$tmp/ghq roots
+# CHECK: $tmp/src
+# CHECK: $tmp/code
 set -e pj_root
+
+# Ahead of every tool and of XDG_PROJECTS_DIR, and a directory that isn't there is left out.
+PATH=$tmp/ghq:$tmp/ghr:$tmp/gogh XDG_PROJECTS_DIR=/srv/env roots
+# CHECK: $tmp/workspace
+# CHECK: $tmp/code
+
+set PROJECT_PATHS
+PATH=$tmp/ghq roots
+# CHECK: ghq root --all
+set -e PROJECT_PATHS
 
 PATH=$tmp/ghq roots
 # CHECK: ghq root --all

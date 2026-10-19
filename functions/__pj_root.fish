@@ -1,6 +1,9 @@
 function __pj_root
     if set -q pj_root[1]
         path normalize -- $pj_root
+    else if set -q PROJECT_PATHS[1]
+        # A missing directory is dropped here, since the first root is what labels are relative to.
+        path normalize -- $PROJECT_PATHS | path filter -d
     else if command -q ghq
         # command -q only looks at PATH, so a function named ghq would run here without command.
         command ghq root --all

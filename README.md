@@ -2,7 +2,7 @@
 
 **Jump to a project** (git repository), or open one in your editor, from [Fish](https://fishshell.com).
 
-- Finds projects from [`ghq`], [`ghr`], [`gogh`] or [`$XDG_PROJECTS_DIR`].
+- Finds projects from [`$PROJECT_PATHS`], [`ghq`], [`ghr`], [`gogh`] or [`$XDG_PROJECTS_DIR`].
 
 - Skips linked [worktrees], each project shows up once, at its main [worktree].
 
@@ -61,7 +61,7 @@ Press <kbd>Tab</kbd> after `pj` or `pjo` to complete a project's name.
 
 The directories to scan for projects.
 
-Defaults to asking the project root from [`ghq`], [`ghr`] or [`gogh`];
+Defaults to asking the project root from [`$PROJECT_PATHS`], [`ghq`], [`ghr`] or [`gogh`];
 falling back to [`$XDG_PROJECTS_DIR`].
 
 ```fish
@@ -112,6 +112,7 @@ Licensed under the [MIT License](LICENSE).
 [`zoxide`]: https://github.com/ajeetdsouza/zoxide
 [`z`]: https://github.com/jethrokuan/z
 [`z.lua`]: https://github.com/skywind3000/z.lua
+[`$PROJECT_PATHS`]: https://github.com/oh-my-fish/plugin-pj#configuration
 [`ghq`]: https://github.com/x-motemen/ghq
 [`ghr`]: https://github.com/siketyan/ghr
 [`gogh`]: https://github.com/kyoh86/gogh
