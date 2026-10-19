@@ -6,7 +6,7 @@
 
 - Skips linked [worktrees], each project shows up once, at its main [worktree].
 
-- Picks with [`fzf`], [`sk`], [`tv`] or [`gum`].
+- Picks with [`fzf`], [`sk`], [`tv`] or [`gum`] (required).
 
 - Opens projects in [Zed], [VS Code], [IntelliJ IDEA], `$VISUAL` or `$EDITOR`.
 
