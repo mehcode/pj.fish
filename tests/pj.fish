@@ -3,7 +3,7 @@
 set fish_function_path (path resolve (status dirname)/../functions) $fish_function_path
 set -g tmp (path resolve (mktemp -d))
 set -gx HOME $tmp/home
-mkdir -p $HOME $tmp/root/{app,lib}/.git $tmp/root/notes $tmp/other/tool/.git $tmp/mirror$tmp/root/app/.git $tmp/empty
+mkdir -p $HOME $tmp/root/{app,lib}/.git $tmp/root/notes/lib $tmp/other/tool/.git $tmp/mirror$tmp/root/app/.git $tmp/empty
 
 mkdir $tmp/root/app.feature
 echo "gitdir: $tmp/root/app/.git/worktrees/app.feature" >$tmp/root/app.feature/.git
@@ -50,6 +50,27 @@ pj lib
 report
 # CHECK: 0 $tmp/root/lib
 
+# notes holds a lib folder. Beside another argument, ./lib is a keyword rather than that folder.
+cd $tmp/root/notes
+set visited $tmp/root/notes
+set -g choice nothing
+pj ./lib foo
+report
+# CHECKERR: finder: [--query] [./lib foo]
+# CHECKERR: labels: app lib $tmp/other/tool
+# CHECK: 1 $tmp/root/notes
+
+# A bare word is never a folder where you are, so lib is still the project.
+set visited $tmp/root/lib
+pj lib
+report
+# CHECK: 0 $tmp/root/lib
+
+# A word that only starts with a dot is a keyword too, like a project named .dotfiles.
+pj .lib
+report
+# CHECK: 0 $tmp/root/lib
+
 set visited $tmp/root/notes
 set -g choice $tmp/other/tool
 pj foo bar
@@ -82,7 +103,7 @@ report
 # CHECKERR: labels: app lib $tmp/other/tool
 # CHECK: 1 $tmp/root/lib
 
-# open is only the subcommand with a keyword after it, and never after --.
+# open is only the subcommand with an argument after it, and never after --.
 pj open
 report
 # CHECKERR: finder: [--query] [open]
@@ -213,7 +234,7 @@ echoed --echo
 # CHECKERR: pj: No repositories found (set pj_root to your projects directory)
 # CHECK: 1 $tmp/root/lib
 
-# Every lookup starts with the query, so a mark it leaves shows whether one was started.
+# Keywords and the picker both start with the query, so a mark it leaves shows whether either ran.
 # It can't report on stderr the way finder does, since __pj_query drops that.
 function query
     set -g queried
@@ -222,6 +243,7 @@ end
 pj --help
 report
 # CHECK: Usage: pj <keywords>...       Jump to the best match for the keywords
+# CHECK:        pj <path>              Jump to the directory
 # CHECK:        pj                     Pick from every project
 # CHECK:        pj open <keywords>...  Open the best match in your editor
 # CHECK: Options:
@@ -229,7 +251,7 @@ report
 # CHECK:        -v, --version  Print the version
 # CHECK:        -o, --open     Open in your editor
 # CHECK:        -e, --echo     Print the path
-# CHECK:        --             Take what follows as keywords, even 'open' or one starting with -
+# CHECK:        --             Take what follows as arguments, even 'open' or one starting with -
 # CHECK: Variables:
 # CHECK:        pj_root       Directories to scan for projects
 # CHECK:        pj_query_cmd  Command that ranks the directories you've visited
@@ -268,6 +290,40 @@ pj open -e app
 report
 # CHECKERR: pj: e/echo o/open: options cannot be used together
 # CHECK: 2 $tmp/root/lib
+
+# A path goes to that directory, project or not, without the query or the picker.
+cd $tmp/root
+pj ./notes
+report
+# CHECK: 0 $tmp/root/notes
+
+pj ..
+report
+# CHECK: 0 $tmp/root
+
+pj $tmp/other/tool
+report
+# CHECK: 0 $tmp/other/tool
+
+# Already in tool, pj stays rather than moving on.
+pj .
+report
+# CHECK: 0 $tmp/other/tool
+
+echoed -e ../../root//./notes/lib/
+# CHECK: 0 $tmp/other/tool
+# CHECK: out: $tmp/root/notes/lib
+
+set -g pj_open_cmd opener
+pj open .
+report
+# CHECK: opener: [$tmp/other/tool]
+# CHECK: 0 $tmp/other/tool
+
+pj ./nope
+report
+# CHECKERR: pj: No such directory: ./nope
+# CHECK: 1 $tmp/other/tool
 
 set -q queried; or echo not queried
 # CHECK: not queried

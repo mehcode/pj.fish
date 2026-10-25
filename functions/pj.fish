@@ -5,7 +5,7 @@ function pj --description 'Jump to a git repository'
     set -l _flag_open
     set -l _flag_echo
 
-    # open is a subcommand only with a keyword after it, so a bare pj open still searches.
+    # open is a subcommand only with an argument after it, so a bare pj open still searches.
     # Checked before argparse drops --, so pj -- open foo searches for both keywords.
     # It becomes --open rather than setting the flag, so argparse refuses it beside --echo too.
     if test "$argv[1]" = open; and set -q argv[2]

@@ -18,7 +18,7 @@
 
 Install with [Fisher](https://github.com/jorgebucaran/fisher):
 
-```console
+```fish
 fisher install mehcode/pj.fish
 ```
 
@@ -29,29 +29,31 @@ Jump to the best match for a keyword among the directories you've visited.
 > Uses `zoxide`, `z` or `z.lua`. If nothing you've visited is a project that matches,
 > `pj` opens the picker with your keywords as the query.
 
-```console
+```fish
 pj dotfiles
+pj ~/dotfiles # Jumps to a path too.
 ```
 
 Pick from every project, with the ones you visit most at the top.
 
-```console
+```fish
 pj
 ```
 
 Open a project in your editor. `pjo` takes the same keywords as `pj`,
 and so do `pj open` and `pj --open` (`-o`).
 
-```console
+```fish
 pjo dotfiles
 pj open dotfiles
 pj --open dotfiles
+pjo . # Opens the current directory.
 ```
 
 Print a project's path instead of jumping to it, with `pj --echo` (`-e`).
 With no keywords it opens the picker and prints the one you pick.
 
-```console
+```fish
 ls (pj --echo dotfiles)
 ```
 

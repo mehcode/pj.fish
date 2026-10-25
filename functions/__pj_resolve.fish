@@ -4,6 +4,22 @@ function __pj_resolve
     argparse name= exclude= -- $argv
     or return
 
+    # A lone ., .. or argument starting with /, ./ or ../ is a path. Any other word is a keyword,
+    # even beside a folder of that name. It's where you asked to go, so --exclude doesn't apply.
+    if test (count $argv) -eq 1; and string match -qr -- '^(/|\.\.?(/|$))' $argv[1]
+        # Normalized rather than resolved, so a symlink stays in the path the way cd keeps it.
+        set -l dir $argv[1]
+        string match -q -- '/*' $dir; or set dir $PWD/$dir
+        set dir (path normalize -- $dir)
+
+        if not test -d $dir
+            echo "$_flag_name: No such directory: $argv[1]" >&2
+            return 1
+        end
+        echo $dir
+        return
+    end
+
     # With keywords, the best repository the query finds wins.
     # The excluded one still wins when it's the only match, so that case never reaches the picker.
     if set -q argv[1]

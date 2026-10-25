@@ -29,6 +29,10 @@ cd $tmp/root/app
 pjo app
 # CHECK: opener: [--new-window] [$tmp/root/app]
 
+# A path opens that directory, project or not.
+pjo ..
+# CHECK: opener: [--new-window] [$tmp/root]
+
 # After --, an option is a keyword.
 pjo -- --help
 # CHECK: opener: [--new-window] [$tmp/root/--help]
@@ -40,7 +44,7 @@ echo $status
 # CHECKERR: pjo: No editor found (set pj_open_cmd to your preferred editor)
 # CHECK: 1
 
-# Every lookup starts with the query, so a mark it leaves shows whether one was started.
+# Keywords and the picker both start with the query, so a mark it leaves shows whether either ran.
 # It can't report on stderr, since __pj_query drops that.
 function query
     set -g queried
@@ -49,11 +53,12 @@ end
 pjo --help
 echo $status
 # CHECK: Usage: pjo <keywords>...  Open the best match for the keywords in your editor
+# CHECK:        pjo <path>         Open the directory in your editor
 # CHECK:        pjo                Pick from every project
 # CHECK: Options:
 # CHECK:        -h, --help     Print this help message
 # CHECK:        -v, --version  Print the version
-# CHECK:        --             Take what follows as keywords, even if it starts with -
+# CHECK:        --             Take what follows as arguments, even if it starts with -
 # CHECK: Variables:
 # CHECK:        pj_root       Directories to scan for projects
 # CHECK:        pj_query_cmd  Command that ranks the directories you've visited
