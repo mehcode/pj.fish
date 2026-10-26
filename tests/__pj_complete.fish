@@ -5,7 +5,9 @@ set fish_complete_path (path resolve (status dirname)/../completions) $fish_comp
 set -g tmp (path resolve (mktemp -d))
 set -gx HOME $tmp/home
 mkdir -p $HOME/mehcode/{foo,foobar,zfoo}/.git $HOME/work/{foo,demo}/.git "$HOME/work/it's (x)/.git" \
-    $tmp/home.bak/lib/.git $tmp/mirror$HOME/tool/.git $tmp/empty
+    $tmp/home.bak/lib/.git $tmp/mirror$HOME/tool/.git $tmp/empty \
+    $HOME/mehcode/foo/{src,tests} "$HOME/work/it's (x)/src"
+touch $HOME/mehcode/foo/README.md
 
 # Not in alphabetical order, which is the order fish puts completions in without -k.
 function query
@@ -73,6 +75,17 @@ complete -C 'pj ~/meh'
 # CHECK: ~/mehcode/foobar
 # CHECK: ~/mehcode/foo
 
+# $HOME written as a variable or in full offers the projects ~ does, written the same way.
+complete -C 'pj $HOME/meh'
+# CHECK: $HOME/mehcode/zfoo
+# CHECK: $HOME/mehcode/foobar
+# CHECK: $HOME/mehcode/foo
+
+complete -C "pj $HOME/meh" | string replace -a $tmp '$tmp'
+# CHECK: $tmp/home/mehcode/zfoo
+# CHECK: $tmp/home/mehcode/foobar
+# CHECK: $tmp/home/mehcode/foo
+
 complete -C 'pjo fo'
 # CHECK: ~/mehcode/foobar
 # CHECK: ~/work/foo
@@ -102,6 +115,63 @@ complete -C 'pj -e fo'
 # CHECK: ~/mehcode/foobar
 # CHECK: ~/work/foo
 # CHECK: ~/mehcode/foo
+
+# A path that isn't inside a project still gets projects.
+complete -C 'pj ~/mehcode/'
+# CHECK: ~/mehcode/zfoo
+# CHECK: ~/mehcode/foobar
+# CHECK: ~/mehcode/foo
+
+# fish matches the folders before the project's own, so they can differ in case or skip letters.
+complete -C 'pj ~/MEHCODE/zf'
+# CHECK: ~/mehcode/zfoo
+
+complete -C 'pj ~/m/z'
+# CHECK: ~/mehcode/zfoo
+
+# Inside a project, the folders there and none of its files.
+complete -C 'pj ~/mehcode/foo/'
+# CHECK: ~/mehcode/foo/src/
+# CHECK: ~/mehcode/foo/tests/
+
+complete -C 'pj ~/mehcode/foo/t'
+# CHECK: ~/mehcode/foo/tests/
+
+complete -C "pj ~/work/it\\'s\\ \\(x\\)/"
+# CHECK: ~/work/it's (x)/src/
+
+# The same folders with $HOME written as a variable or in full.
+complete -C 'pj $HOME/mehcode/foo/t'
+# CHECK: $HOME/mehcode/foo/tests/
+
+complete -C "pj $HOME/mehcode/foo/t" | string replace -a $tmp '$tmp'
+# CHECK: $tmp/home/mehcode/foo/tests/
+
+complete -C 'pjo ~/mehcode/foo/t'
+# CHECK: ~/mehcode/foo/tests/
+
+complete -C 'pj open ~/mehcode/foo/t'
+# CHECK: ~/mehcode/foo/tests/
+
+complete -C 'pj --open ~/mehcode/foo/t'
+# CHECK: ~/mehcode/foo/tests/
+
+# A relative path is read from where you are, and offers projects as relative paths.
+cd $HOME/mehcode
+complete -C 'pj ./fo'
+# CHECK: ./foobar
+# CHECK: ./foo
+
+complete -C 'pj ../work/fo'
+# CHECK: ../work/foo
+
+complete -C 'pj ./foo/t'
+# CHECK: ./foo/tests/
+
+# foo/ is a keyword to pj rather than a path, so its folders aren't offered. fish can still offer a
+# project whose path holds its letters in order, and $tmp's random name decides whether one does.
+complete -C 'pj foo/' | string match -q -- 'foo/*'; or echo 'no folders'
+# CHECK: no folders
 
 complete -C 'pj -'
 # CHECK: -e{{\t}}Print the path
