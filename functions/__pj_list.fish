@@ -14,12 +14,12 @@ function __pj_list
         set dirs (path filter -v -- $subdirs.git | string replace -r -- '\.git$' '')
     end
 
-    for dir in $found
-        # A variable named after each project marks it seen, since set -q finds one without walking
-        # a list. It's set -f because a set -l in the loop is gone by the next pass.
-        set -l key __pj_seen_(string escape --style=var -- $dir)
-        set -q $key; and continue
-        set -f $key
-        echo $dir
-    end
+    # A variable named after each project marks it seen, since set -q finds one without walking
+    # a list. It's set -f because a set -l in the loop is gone by the next pass. The names are
+    # escaped and unescaped in one call each, since a call per project adds up to milliseconds.
+    for key in (string escape --style=var -- $found)
+        set -q __pj_seen_$key; and continue
+        set -f __pj_seen_$key
+        echo $key
+    end | string unescape --style=var
 end
