@@ -7,6 +7,7 @@ mkdir -p $HOME $tmp/root/app/.git $tmp/root/1/2/3/deep/.git $tmp/root/1/2/3/4/de
 
 mkdir $tmp/root/app.feature
 echo "gitdir: $tmp/root/app/.git/worktrees/app.feature" >$tmp/root/app.feature/.git
+mkdir -p $tmp/root/app.feature/vendor/.git
 
 function projects
     __pj_list | string replace $tmp '$tmp'
@@ -19,6 +20,7 @@ function seq
     echo 1
 end
 
+# deeper is 5 levels down and vendor is in the linked worktree app.feature, so neither is listed.
 set -g pj_query_cmd true
 projects
 # CHECK: $tmp/root/app
