@@ -2,12 +2,12 @@ function __pj_help
     switch $argv[1]
         case pj
             echo 'Usage: pj <keywords>...       Jump to the best match for the keywords'
-            echo '       pj <path>              Jump to the directory'
+            echo '       pj <path>              Jump to a project directory'
             echo '       pj                     Pick from every project'
             echo '       pj open <keywords>...  Open the best match in your editor'
         case pjo
             echo 'Usage: pjo <keywords>...  Open the best match for the keywords in your editor'
-            echo '       pjo <path>         Open the directory in your editor'
+            echo '       pjo <path>         Open a project directory in your editor'
             echo '       pjo                Pick from every project'
     end
     echo 'Options:'

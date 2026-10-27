@@ -3,7 +3,7 @@
 set fish_function_path (path resolve (status dirname)/../functions) $fish_function_path
 set -g tmp (path resolve (mktemp -d))
 set -gx HOME $tmp/home
-mkdir -p $HOME $tmp/root/{app,lib}/.git $tmp/root/notes/lib $tmp/other/tool/.git $tmp/mirror$tmp/root/app/.git $tmp/empty
+mkdir -p $HOME $tmp/root/{app,lib}/.git $tmp/root/app/src $tmp/root/notes/lib $tmp/other/tool/.git $tmp/mirror$tmp/root/app/.git $tmp/empty
 
 mkdir $tmp/root/app.feature
 echo "gitdir: $tmp/root/app/.git/worktrees/app.feature" >$tmp/root/app.feature/.git
@@ -243,7 +243,7 @@ end
 pj --help
 report
 # CHECK: Usage: pj <keywords>...       Jump to the best match for the keywords
-# CHECK:        pj <path>              Jump to the directory
+# CHECK:        pj <path>              Jump to a project directory
 # CHECK:        pj                     Pick from every project
 # CHECK:        pj open <keywords>...  Open the best match in your editor
 # CHECK: Options:
@@ -291,41 +291,112 @@ report
 # CHECKERR: pj: e/echo o/open: options cannot be used together
 # CHECK: 2 $tmp/root/lib
 
-# A path goes to that directory, project or not, without the query or the picker.
+set -q queried; or echo not queried
+# CHECK: not queried
+
+# A path is checked against every project, so the query runs, but never with the path as a keyword.
+function query
+    set -ga keywords $argv
+end
+
+set pj_root $tmp/root $tmp/other
+set -g pj_find_cmd finder --query
+set -g pj_open_cmd opener
+
+# A path goes to a project or a folder inside one, without the picker.
 cd $tmp/root
-pj ./notes
+pj ./app/src
 report
-# CHECK: 0 $tmp/root/notes
+# CHECK: 0 $tmp/root/app/src
 
 pj ..
 report
-# CHECK: 0 $tmp/root
+# CHECK: 0 $tmp/root/app
 
-pj $tmp/other/tool
+pj ../../other/tool
 report
 # CHECK: 0 $tmp/other/tool
 
-# Already in tool, pj stays rather than moving on.
+pj $tmp/root/app/src
+report
+# CHECK: 0 $tmp/root/app/src
+
+# Already in src, pj stays rather than moving on.
 pj .
 report
-# CHECK: 0 $tmp/other/tool
+# CHECK: 0 $tmp/root/app/src
 
-echoed -e ../../root//./notes/lib/
-# CHECK: 0 $tmp/other/tool
-# CHECK: out: $tmp/root/notes/lib
+echoed -e ../../..//other/./tool/
+# CHECK: 0 $tmp/root/app/src
+# CHECK: out: $tmp/other/tool
 
-set -g pj_open_cmd opener
 pj open .
 report
-# CHECK: opener: [$tmp/other/tool]
-# CHECK: 0 $tmp/other/tool
+# CHECK: opener: [$tmp/root/app/src]
+# CHECK: 0 $tmp/root/app/src
+
+pj --open ..
+report
+# CHECK: opener: [$tmp/root/app]
+# CHECK: 0 $tmp/root/app/src
+
+# A project counts however a symlink spells its path, and so does a symlink in it leading out.
+ln -s $tmp/root $tmp/link
+ln -s $tmp/empty $tmp/root/app/out
+cd $tmp/link/app
+pj ./out
+report
+# CHECK: 0 $tmp/link/app/out
+
+pj ../src
+report
+# CHECK: 0 $tmp/link/app/src
+
+set pj_root $tmp/link $tmp/other
+cd $tmp/root/app
+pj ./src
+report
+# CHECK: 0 $tmp/root/app/src
+
+set pj_root $tmp/root $tmp/other
+
+# notes only holds a folder, and app.feature is a linked worktree whose name starts with app.
+cd $tmp/root
+pj ./notes
+report
+# CHECKERR: pj: Not inside a project: ./notes
+# CHECK: 1 $tmp/root
+
+pj ./app.feature
+report
+# CHECKERR: pj: Not inside a project: ./app.feature
+# CHECK: 1 $tmp/root
+
+pj .
+report
+# CHECKERR: pj: Not inside a project: .
+# CHECK: 1 $tmp/root
+
+echoed -e ./notes/lib
+# CHECKERR: pj: Not inside a project: ./notes/lib
+# CHECK: 1 $tmp/root
+
+pj open ..
+report
+# CHECKERR: pj: Not inside a project: ..
+# CHECK: 1 $tmp/root
+
+pj --open ./notes
+report
+# CHECKERR: pj: Not inside a project: ./notes
+# CHECK: 1 $tmp/root
 
 pj ./nope
 report
 # CHECKERR: pj: No such directory: ./nope
-# CHECK: 1 $tmp/other/tool
+# CHECK: 1 $tmp/root
 
-set -q queried; or echo not queried
-# CHECK: not queried
+set -q keywords; and not set -q keywords[1]; and echo queried without keywords
+# CHECK: queried without keywords
 
 rm -rf $tmp

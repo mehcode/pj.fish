@@ -16,6 +16,13 @@ function __pj_resolve
             echo "$_flag_name: No such directory: $argv[1]" >&2
             return 1
         end
+
+        # Checked against the list rather than by looking for a .git above it, so pj takes the paths
+        # Tab and the picker offer.
+        if not __pj_is_inside_any $dir (__pj_list)
+            echo "$_flag_name: Not inside a project: $argv[1]" >&2
+            return 1
+        end
         echo $dir
         return
     end

@@ -29,9 +29,14 @@ cd $tmp/root/app
 pjo app
 # CHECK: opener: [--new-window] [$tmp/root/app]
 
-# A path opens that directory, project or not.
+# A path opens a project or a folder inside one.
+pjo .
+# CHECK: opener: [--new-window] [$tmp/root/app]
+
 pjo ..
-# CHECK: opener: [--new-window] [$tmp/root]
+echo $status
+# CHECKERR: pjo: Not inside a project: ..
+# CHECK: 1
 
 # After --, an option is a keyword.
 pjo -- --help
@@ -53,7 +58,7 @@ end
 pjo --help
 echo $status
 # CHECK: Usage: pjo <keywords>...  Open the best match for the keywords in your editor
-# CHECK:        pjo <path>         Open the directory in your editor
+# CHECK:        pjo <path>         Open a project directory in your editor
 # CHECK:        pjo                Pick from every project
 # CHECK: Options:
 # CHECK:        -h, --help     Print this help message

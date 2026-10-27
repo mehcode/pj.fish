@@ -31,7 +31,7 @@ Jump to the best match for a keyword among the directories you've visited.
 
 ```fish
 pj dotfiles
-pj ~/dotfiles # Jumps to a path too.
+pj ~/dotfiles/fish # Jumps to a project path.
 ```
 
 Pick from every project, with the ones you visit most at the top.
@@ -47,7 +47,7 @@ and so do `pj open` and `pj --open` (`-o`).
 pjo dotfiles
 pj open dotfiles
 pj --open dotfiles
-pjo . # Opens the current directory.
+pjo . # Opens the current project directory.
 ```
 
 Print a project's path instead of jumping to it, with `pj --echo` (`-e`).
