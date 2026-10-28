@@ -16,6 +16,8 @@
 
 ## Installation
 
+- [Fish] 4.0 or later.
+
 Install with [Fisher](https://github.com/jorgebucaran/fisher):
 
 ```fish
@@ -117,6 +119,7 @@ set --global pj_open_cmd code --new-window
 
 Licensed under the [MIT License](LICENSE).
 
+[fish]: https://fishshell.com
 [`fzf`]: https://github.com/junegunn/fzf
 [`sk`]: https://github.com/skim-rs/skim
 [`tv`]: https://github.com/alexpasmantier/television
