@@ -12,13 +12,14 @@ function __pj_complete
         string match -q -- '/*' $word_dir; or set word_dir $PWD/$word_dir
         set word_dir (path normalize -- $word_dir)
 
-        set -l dir $word_dir
-        while test $dir != /
-            if contains -- $dir $dirs
+        if __pj_is_inside_any $word_dir $dirs
+            # fish offers ../ after a . or .., which from the project's own folder leads out of it.
+            if __pj_is_inside_any (path dirname -- $word_dir) $dirs
                 __fish_complete_directories $token ''
-                return
+            else
+                __fish_complete_directories $token '' | string match -vr -- '/\.\./\t'
             end
-            set dir (path dirname -- $dir)
+            return
         end
 
         # fish drops candidates that don't match the token as typed, so projects start the way it

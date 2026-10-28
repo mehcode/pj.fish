@@ -140,6 +140,13 @@ complete -C 'pj ~/mehcode/foo/t'
 complete -C "pj ~/work/it\\'s\\ \\(x\\)/"
 # CHECK: ~/work/it's (x)/src/
 
+# ../ is offered while it stays inside the project, so not from the project's own folder.
+complete -C 'pj ~/mehcode/foo/src/..'
+# CHECK: ~/mehcode/foo/src/../
+
+complete -C 'pj ~/mehcode/foo/..' | count
+# CHECK: 0
+
 # The same folders with $HOME written as a variable or in full.
 complete -C 'pj $HOME/mehcode/foo/t'
 # CHECK: $HOME/mehcode/foo/tests/
