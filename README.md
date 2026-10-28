@@ -59,7 +59,12 @@ With no keywords it opens the picker and prints the one you pick.
 ls (pj --echo dotfiles)
 ```
 
-Press <kbd>Tab</kbd> after `pj` or `pjo` to complete a project's name.
+Complete a project's path with <kbd>Tab</kbd>, then the directories inside it.
+
+```fish
+pj dotf<Tab> # Completes ~/dotfiles/ from part of its name.
+pj ~/dotfiles/<Tab> # Lists the directories inside it.
+```
 
 ## Worktrees
 

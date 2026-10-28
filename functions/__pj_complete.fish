@@ -32,7 +32,9 @@ function __pj_complete
 
         # string replace reads $ and \ in a replacement, so they're doubled in the start.
         set start (string unescape -- $start | string replace -ra -- '[\\\\$]' '$0$0')
-        string replace -rf -- "^$prefix" $start/ $dirs
+
+        # The trailing / keeps fish from adding a space, so another Tab offers the folders inside.
+        string replace -rf -- "^$prefix" $start/ $dirs/
         return
     end
 
@@ -49,5 +51,5 @@ function __pj_complete
     end
 
     set -l home (string escape --style=regex -- $HOME)
-    string replace -r -- "^$home/" '~/' $dirs
+    string replace -r -- "^$home/" '~/' $dirs/
 end
