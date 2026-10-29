@@ -25,7 +25,7 @@ function pj --description 'Jump to a git repository'
         return
     end
 
-    # No --exclude, so like pjo these take the best match even from inside it.
+    # No --exclude, so like pjo these take the highest-ranked match even from inside it.
     if set -q _flag_echo[1]
         __pj_resolve --name=pj -- $argv
         return

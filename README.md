@@ -26,7 +26,7 @@ fisher install mehcode/pj.fish
 
 ## Quickstart
 
-Jump to the best match for a keyword among the directories you've visited.
+Jump to the highest-ranked project matching a keyword, among the directories you've visited.
 
 > Uses `zoxide`, `z` or `z.lua`. If nothing you've visited is a project that matches,
 > `pj` opens the picker with your keywords as the query.
@@ -90,7 +90,7 @@ set --global pj_root ~/src ~/work
 ### `$pj_query_cmd`
 
 The command that ranks the directories you've visited.
-It gets your keywords as arguments and prints matching directories one per line, best first.
+It gets your keywords as arguments and prints matching directories one per line, highest-ranked first.
 With no keywords, it prints every directory it knows.
 
 Defaults to [`zoxide`], [`z`] or [`z.lua`].

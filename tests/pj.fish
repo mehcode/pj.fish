@@ -32,7 +32,7 @@ set -g pj_root $tmp/root $tmp/other
 set -g pj_query_cmd query
 set -g pj_find_cmd finder --query
 
-# notes isn't a project and app.feature is a linked worktree, so app is the best match.
+# notes isn't a project and app.feature is a linked worktree, so app is the highest-ranked project.
 set -g visited $tmp/root/notes $tmp/root/app.feature $tmp/root/app $tmp/root/lib
 cd $tmp
 pj app
@@ -151,7 +151,7 @@ report
 # CHECK: opener: [--new-window] [$tmp/root/app]
 # CHECK: 0 $tmp/root/lib
 
-# pj lib would move on to app from here. Opening takes the best match wherever it's run.
+# pj lib would move on to app from here. Opening takes the highest-ranked match wherever it's run.
 set visited $tmp/root/lib $tmp/root/app
 pj --open lib
 report
@@ -190,7 +190,7 @@ echoed -e foo
 # CHECKERR: labels: app lib $tmp/other/tool
 # CHECK: 1 $tmp/root/lib
 
-# pj lib would move on to app from here. Printing takes the best match wherever it's run.
+# pj lib would move on to app from here. Printing takes the highest-ranked match wherever it's run.
 set visited $tmp/root/lib $tmp/root/app
 echoed --echo lib
 # CHECK: 0 $tmp/root/lib
@@ -242,10 +242,10 @@ end
 
 pj --help
 report
-# CHECK: Usage: pj <keywords>...       Jump to the best match for the keywords
+# CHECK: Usage: pj <keywords>...       Jump to the highest-ranked matching project
 # CHECK:        pj <path>              Jump to a project directory
 # CHECK:        pj                     Pick from every project
-# CHECK:        pj open <keywords>...  Open the best match in your editor
+# CHECK:        pj open <keywords>...  Open the highest-ranked matching project in your editor
 # CHECK: Options:
 # CHECK:        -h, --help     Print this help message
 # CHECK:        -v, --version  Print the version
@@ -261,7 +261,7 @@ report
 
 pj -h | string match 'Usage:*'
 echo $pipestatus[1]
-# CHECK: Usage: pj <keywords>...       Jump to the best match for the keywords
+# CHECK: Usage: pj <keywords>...       Jump to the highest-ranked matching project
 # CHECK: 0
 
 pj --version

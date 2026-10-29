@@ -5,7 +5,8 @@ set -g tmp (path resolve (mktemp -d))
 set -gx HOME $tmp/home
 mkdir -p $HOME $tmp/root/{app,lib,--help}/.git $tmp/empty
 
-# The best match is named after the keywords, so pjo opens lib when they don't reach the query.
+# The highest-ranked match is named after the keywords, so pjo opens lib when they don't reach
+# the query.
 function query
     printf '%s\n' $tmp/root/$argv $tmp/root/lib
 end
@@ -24,7 +25,7 @@ set -g pj_open_cmd opener --new-window
 pjo app
 # CHECK: opener: [--new-window] [$tmp/root/app]
 
-# pj would move on to lib from here. pjo opens the best match wherever it's run.
+# pj would move on to lib from here. pjo opens the highest-ranked match wherever it's run.
 cd $tmp/root/app
 pjo app
 # CHECK: opener: [--new-window] [$tmp/root/app]
@@ -57,7 +58,7 @@ end
 
 pjo --help
 echo $status
-# CHECK: Usage: pjo <keywords>...  Open the best match for the keywords in your editor
+# CHECK: Usage: pjo <keywords>...  Open the highest-ranked matching project in your editor
 # CHECK:        pjo <path>         Open a project directory in your editor
 # CHECK:        pjo                Pick from every project
 # CHECK: Options:
@@ -73,7 +74,7 @@ echo $status
 
 pjo -h | string match 'Usage:*'
 echo $pipestatus[1]
-# CHECK: Usage: pjo <keywords>...  Open the best match for the keywords in your editor
+# CHECK: Usage: pjo <keywords>...  Open the highest-ranked matching project in your editor
 # CHECK: 0
 
 pjo --version

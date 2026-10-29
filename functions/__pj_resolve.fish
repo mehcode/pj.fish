@@ -27,7 +27,7 @@ function __pj_resolve
         return
     end
 
-    # With keywords, the best repository the query finds wins.
+    # With keywords, the highest-ranked repository the query finds wins.
     # The excluded one still wins when it's the only match, so that case never reaches the picker.
     if set -q argv[1]
         set -l best
