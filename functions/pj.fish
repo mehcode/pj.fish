@@ -1,4 +1,4 @@
-function pj --description 'Jump to a git repository'
+function pj --description 'Jump to a project'
     # Declared first, so a global _flag_ variable isn't read when its flag isn't given.
     set -l _flag_help
     set -l _flag_version

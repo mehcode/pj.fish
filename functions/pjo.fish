@@ -1,4 +1,4 @@
-function pjo --description 'Open a git repository in your editor'
+function pjo --description 'Open a project in your editor'
     # Declared first, so a global _flag_help or _flag_version isn't read when its flag isn't given.
     set -l _flag_help
     set -l _flag_version
