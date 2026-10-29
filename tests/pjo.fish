@@ -103,7 +103,7 @@ set -q queried; or echo not queried
 set pj_root $tmp/empty
 pjo
 echo $status
-# CHECKERR: pjo: No repositories found (set pj_root to your projects directory)
+# CHECKERR: pjo: No projects found (set pj_root to your projects directory)
 # CHECK: 1
 
 # An empty PATH, so the finders installed on this machine aren't found.

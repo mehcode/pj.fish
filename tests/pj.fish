@@ -227,11 +227,11 @@ report
 set pj_root $tmp/empty
 pj
 report
-# CHECKERR: pj: No repositories found (set pj_root to your projects directory)
+# CHECKERR: pj: No projects found (set pj_root to your projects directory)
 # CHECK: 1 $tmp/root/lib
 
 echoed --echo
-# CHECKERR: pj: No repositories found (set pj_root to your projects directory)
+# CHECKERR: pj: No projects found (set pj_root to your projects directory)
 # CHECK: 1 $tmp/root/lib
 
 # Keywords and the picker both start with the query, so a mark it leaves shows whether either ran.

@@ -46,7 +46,7 @@ function __pj_resolve
     # Given no strings, string replace reads stdin, and gum filter lists the current directory.
     set -l dirs (__pj_list)
     if not set -q dirs[1]
-        echo "$_flag_name: No repositories found (set pj_root to your projects directory)" >&2
+        echo "$_flag_name: No projects found (set pj_root to your projects directory)" >&2
         return 1
     end
 
